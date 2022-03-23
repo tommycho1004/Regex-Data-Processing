@@ -31,20 +31,39 @@ pf.close()
 #open result file 2
 pokeRes = open("pokemonResult.csv", "w")
 df = pd.read_csv("pokemonTrain.csv")
+#getting unique weakness keys
 weak_types = df['weakness'].unique()
-print(df.loc[df['type'] == np.nan])
+print(df.loc[df['level'] <= 40])
 # a dict mapping the most common type to weakness
 weakDict = {}
 for ele in weak_types:
-    # find the rows with specified weakness and find the most common type => presort the df
+    # find the rows with specified weakness and find the most common type => presort the df so its alphabetical
     temp = df.loc[df['weakness'] == str(ele)].sort_values(by='type')
     weakDict[ele] = temp['type'].value_counts()[:1].index[0]
-    print(ele,'\n', temp['type'].value_counts()[:1].index[0])
+    #print(ele,'\n', temp['type'].value_counts()[:1].index[0])
 # replace all NaN values in type with corresponding weakness according to the weakness Dictionary
 for key in weakDict.keys():
     df.loc[df['type'].isnull() & (df['weakness'] == key), 'type'] = weakDict[key]
-print(df)
+#print(df)
 
-#3 replace missing ATK/HP/DEF values with mean() when > lv40 or <= lv40. Using the same df as #2
+# 3 replace missing ATK/HP/DEF values with mean() when > lv40 or <= lv40. Using the same df as #2
+# round to 1 decimal
+lv_thresh = 40.0
+avg_ATK_above = round(df.loc[df['level'] > lv_thresh, 'atk'].mean(),1)
+avg_ATK_below = round(df.loc[df['level'] <= lv_thresh, 'atk'].mean(),1)
+avg_HP_above = round(df.loc[df['level'] > lv_thresh, 'hp'].mean(),1)
+avg_HP_below = round(df.loc[df['level'] <= lv_thresh, 'hp'].mean(),1)
+avg_DEF_above = round(df.loc[df['level'] > lv_thresh, 'def'].mean(),1)
+avg_DEF_below = round(df.loc[df['level'] <= lv_thresh, 'def'].mean(),1)
+print(avg_ATK_above, avg_ATK_below, avg_HP_above, avg_HP_below, avg_DEF_above, avg_DEF_below)
+#ATK
+df.loc[df['atk'].isnull() & (df['level'] > lv_thresh), 'atk'] = avg_ATK_above
+df.loc[df['atk'].isnull() & (df['level'] <= lv_thresh), 'atk'] = avg_ATK_below
+#HP
+df.loc[df['hp'].isnull() & (df['level'] > lv_thresh), 'hp'] = avg_HP_above
+df.loc[df['hp'].isnull() & (df['level'] <= lv_thresh), 'hp'] = avg_HP_below
+#DEF
+df.loc[df['def'].isnull() & (df['level'] > lv_thresh), 'def'] = avg_DEF_above
+df.loc[df['def'].isnull() & (df['level'] <= lv_thresh), 'def'] = avg_DEF_below
 df.to_csv('pokemonResult.csv', index=False)
 pokeRes.close()
