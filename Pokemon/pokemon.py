@@ -36,8 +36,8 @@ print(df.loc[df['weakness'] == 'water'])
 print(weak_types)
 weakDict = {}
 for ele in weak_types:
-    temp = df.loc[df['weakness'] == str(ele)]
-    print(ele,'\n', temp['type'].value_counts())
+    temp = df.loc[df['weakness'] == str(ele)].sort_values(by='type')
+    print(ele,'\n', temp['type'].value_counts()[:1])
 print(weakDict)
 #print(df)
 
