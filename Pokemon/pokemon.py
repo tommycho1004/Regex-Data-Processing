@@ -32,13 +32,19 @@ pf.close()
 pokeRes = open("pokemonResult.csv", "w")
 df = pd.read_csv("pokemonTrain.csv")
 weak_types = df['weakness'].unique()
-print(df.loc[df['weakness'] == 'water'])
-print(weak_types)
+print(df.loc[df['type'] == np.nan])
+# a dict mapping the most common type to weakness
 weakDict = {}
 for ele in weak_types:
+    # find the rows with specified weakness and find the most common type => presort the df
     temp = df.loc[df['weakness'] == str(ele)].sort_values(by='type')
-    print(ele,'\n', temp['type'].value_counts()[:1])
-print(weakDict)
-#print(df)
+    weakDict[ele] = temp['type'].value_counts()[:1].index[0]
+    print(ele,'\n', temp['type'].value_counts()[:1].index[0])
+# replace all NaN values in type with corresponding weakness according to the weakness Dictionary
+for key in weakDict.keys():
+    df.loc[df['type'].isnull() & (df['weakness'] == key), 'type'] = weakDict[key]
+print(df)
 
+#3 replace missing ATK/HP/DEF values with mean() when > lv40 or <= lv40. Using the same df as #2
+df.to_csv('pokemonResult.csv', index=False)
 pokeRes.close()
