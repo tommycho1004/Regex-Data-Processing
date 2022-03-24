@@ -2,13 +2,6 @@ import csv
 import re
 from collections import Counter
 
-def age_average(csvData):
-    csvData = csvData.split('-')
-    try:
-        return round((int(csvData[0]) + int(csvData[1]))/2)
-    except:
-        return round(int(csvData[0]))
-
 def dateSwapper(dateList):
     dateList[0], dateList[1] = dateList[1], dateList[0]
     return dateList
@@ -44,14 +37,30 @@ def commonCity(province):
             if row[4] == province:
                 if row[3] != "NaN":   
                     city_list.append(row[3])
-        cityCounter = Counter(city_list).most_common()
-        #print(OrderedDict(cityCounter))
-        return Counter(city_list).most_common(1)[0][0]
+        citySorted = (sorted(Counter(city_list).most_common(), key=lambda x: (-x[1], x[0])))
+        return citySorted[0][0]
+    
+def symptomsHelper(province):
+    symptom_list = []
+    with open('covidTrain.csv') as f:
+        reader = csv.reader(f)
+        next(reader)
+        for row in reader:
+            i = 0
+            if row[4] == province:
+                if row[11] != "NaN":   
+                    temp = row[11].strip('').split(';')
+                    symptom_list.extend([s.strip() for s in temp])
+        while i < len(symptom_list):
+            if re.match('fever.+', symptom_list[i]):
+                symptom_list[i] = 'fever'
+            i = i+1
+        symptomSorted = (sorted(Counter(symptom_list).most_common(), key=lambda x: (-x[1], x[0])))
+        return symptomSorted[0][0]
 
 with open('covidTrain.csv') as covidfile:
     reader = csv.reader(covidfile)
-    next(reader)                           # skip first line of field names
-    
+    next(reader)
     for row in reader:
         if re.match('[0-9]+-[0-9]+', row[1]):
             temp = [int(n) for n in row[1].split('-')]
@@ -66,3 +75,6 @@ with open('covidTrain.csv') as covidfile:
             row[7] = longitudeAvg(row[4])
         if re.match('NaN', row[3]):
             row[3] = commonCity(row[4])
+        if re.match('NaN', row[11]):
+            row[11] = symptomsHelper(row[4])
+            
