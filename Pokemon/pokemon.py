@@ -4,6 +4,7 @@ import pandas as pd
 from pandas import Series
 import sys
 from collections import Counter
+import json
 
 # 1. Finding percentage of fire pokemon that are at or above level 40
 # open result file 1
@@ -19,8 +20,8 @@ for r in reader:
         fire_type += 1
         if float(r[2]) >= 40.0:
             level_40 += 1
-print('Total number of fire types: ', fire_type)
-print('Total number of fire types >= level 40: ', level_40)
+#print('Total number of fire types: ', fire_type)
+#print('Total number of fire types >= level 40: ', level_40)
 poke1.write(str(round((level_40/fire_type)*100)))
 #close write file
 poke1.close()
@@ -33,7 +34,8 @@ pokeRes = open("pokemonResult.csv", "w")
 df = pd.read_csv("pokemonTrain.csv")
 #getting unique weakness keys
 weak_types = df['weakness'].unique()
-print(df.loc[df['level'] <= 40])
+# df.loc[cond, column to modify]
+#print(df.loc[df['level'] <= 40])
 # a dict mapping the most common type to weakness
 weakDict = {}
 for ele in weak_types:
@@ -55,7 +57,7 @@ avg_HP_above = round(df.loc[df['level'] > lv_thresh, 'hp'].mean(),1)
 avg_HP_below = round(df.loc[df['level'] <= lv_thresh, 'hp'].mean(),1)
 avg_DEF_above = round(df.loc[df['level'] > lv_thresh, 'def'].mean(),1)
 avg_DEF_below = round(df.loc[df['level'] <= lv_thresh, 'def'].mean(),1)
-print(avg_ATK_above, avg_ATK_below, avg_HP_above, avg_HP_below, avg_DEF_above, avg_DEF_below)
+#print(avg_ATK_above, avg_ATK_below, avg_HP_above, avg_HP_below, avg_DEF_above, avg_DEF_below)
 #ATK
 df.loc[df['atk'].isnull() & (df['level'] > lv_thresh), 'atk'] = avg_ATK_above
 df.loc[df['atk'].isnull() & (df['level'] <= lv_thresh), 'atk'] = avg_ATK_below
@@ -66,4 +68,32 @@ df.loc[df['hp'].isnull() & (df['level'] <= lv_thresh), 'hp'] = avg_HP_below
 df.loc[df['def'].isnull() & (df['level'] > lv_thresh), 'def'] = avg_DEF_above
 df.loc[df['def'].isnull() & (df['level'] <= lv_thresh), 'def'] = avg_DEF_below
 df.to_csv('pokemonResult.csv', index=False)
+#close file
 pokeRes.close()
+# 4 Create pokemon personality dictionary from i:pokemonResult.csv -> o: pokemon4.txt
+# can use df from #3, but cuz of the instructions ill make a new df
+# result file 4
+
+df2 = pd.read_csv('pokemonResult.csv')
+# list of all types
+all_types = df2['type'].unique()
+all_types.sort()
+#print(all_types)
+result = {}
+for ele in all_types:
+    temp = df2.loc[df2['type'] == ele, 'personality'].unique()
+    temp = temp.tolist()
+    temp.sort()
+    result[ele] = temp
+#close result file
+with open('pokemon4.txt','w') as poke4:
+    for key, value in result.items():
+        poke4.write("{}: {}\n".format(key, str(value).strip('[]').replace("'", '')))
+poke4.close()
+
+#5
+df3 = pd.read_csv('pokemonResult.csv')
+avg_hp_3 = round(df.loc[df['stage'] == 3.0, 'hp'].mean())
+with open('pokemon5.txt','w') as poke5:
+    poke5.write(str(avg_hp_3))
+poke5.close()
