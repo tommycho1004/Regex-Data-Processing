@@ -1,6 +1,5 @@
 import csv
 import re
-import os
 from collections import Counter
 
 def dateSwapper(dateList):
