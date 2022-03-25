@@ -1,1 +1,1 @@
-50
+Percentage of fire type Pokemons at or above level 40 = 50

@@ -1,1 +1,1 @@
-99
+Average hit point for Pokemons of stage 3.0 = 99

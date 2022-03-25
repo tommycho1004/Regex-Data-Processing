@@ -20,7 +20,9 @@ for r in reader:
             level_40 += 1
 # print('Total number of fire types: ', fire_type)
 # print('Total number of fire types >= level 40: ', level_40)
-poke1.write(str(round((level_40 / fire_type) * 100)))
+value = str(round((level_40 / fire_type) * 100))
+L = ['Percentage of fire type Pokemons at or above level 40 = ', value]
+poke1.writelines(L)
 # close write file
 poke1.close()
 # close original csv file
@@ -139,7 +141,24 @@ for i in personality:
     temp.sort()
     personality[i] = temp
 with open('pokemon4.txt','w') as poke4:
+    poke4.write('Pokemon type to personality mapping:\n\n')
     for i in sorted(personality):
-        poke4.write("{}: {}\n".format(i, str(personality[i]).strip('[]').replace("'",'')))
+        poke4.write("\t{}: {}\n".format(i, str(personality[i]).strip('[]').replace("'",'')))
 poke4.close()
-
+pf.close()
+#5
+pf = open("pokemonResult.csv", "r")
+reader = csv.reader(pf)
+next(reader)
+avg_hp = 0
+count = 0
+for row in reader:
+    if float(row[9]) == 3.0:
+        avg_hp += float(row[8])
+        count += 1
+avg_hp = str(round(avg_hp / count))
+with open('pokemon5.txt','w') as poke5:
+    L = ['Average hit point for Pokemons of stage 3.0 = ', avg_hp]
+    poke5.writelines(L)
+poke5.close()
+pf.close()
