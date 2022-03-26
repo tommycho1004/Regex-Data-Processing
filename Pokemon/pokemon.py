@@ -1,9 +1,10 @@
+# Jennifer Xin
 import csv
 import sys
 from collections import Counter
-import json
 import math
 from collections import defaultdict
+
 # 1. Finding percentage of fire pokemon that are at or above level 40
 # open result file 1
 poke1 = open("pokemon1.txt", "w")
@@ -130,16 +131,19 @@ pf = open("pokemonResult.csv", "r")
 reader = csv.reader(pf)
 next(reader)
 personality = defaultdict(list)
+# creating a dictionary that maps all unique types with unique personalities
 for row in reader:
     if row[4] not in personality:
         personality[row[4]].append(row[3])
     else:
         if str(row[3]) not in personality[row[4]]:
             personality[row[4]].append(row[3])
+# sort alphabetically
 for i in personality:
     temp = personality[i]
     temp.sort()
     personality[i] = temp
+# write with correct formatting
 with open('pokemon4.txt','w') as poke4:
     poke4.write('Pokemon type to personality mapping:\n\n')
     for i in sorted(personality):
@@ -152,11 +156,13 @@ reader = csv.reader(pf)
 next(reader)
 avg_hp = 0
 count = 0
+# calculating avg_hp for 3.0 pokemons
 for row in reader:
     if float(row[9]) == 3.0:
         avg_hp += float(row[8])
         count += 1
 avg_hp = str(round(avg_hp / count))
+# write with correct format
 with open('pokemon5.txt','w') as poke5:
     L = ['Average hit point for Pokemons of stage 3.0 = ', avg_hp]
     poke5.writelines(L)
