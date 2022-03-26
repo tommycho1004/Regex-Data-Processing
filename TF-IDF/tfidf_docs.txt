@@ -1,3 +1,4 @@
 doc1.txt
 doc2.txt
 doc3.txt
+covid_doc1.txt

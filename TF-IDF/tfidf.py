@@ -50,6 +50,24 @@ def stemLemming(list):
         outputList.append(word)
     return outputList
 
+def tf_idf (file):
+    pf = open(file,'r')
+    words = []
+    for r in pf.read().split():
+        words.append(r)
+    num_words = len(words)
+    words.sort()
+    res = {}
+    for word in words:
+        if word not in res:
+            res[word] = 1
+        else:
+            res[word] += 1
+    for ele in res.keys():
+        res[ele] = res[ele] / num_words
+    pf.close()
+    return res
+
 #main code to run
 pf = open("tfidf_docs.txt", "r")
 fileList = []
@@ -64,3 +82,14 @@ for file in fileList: #clean every file on the list
     finishedList = stemLemming(noStopWordList)
     outputFile = open(title+file, 'w') #write the processed words onto new file
     outputFile.write(' '.join(finishedList))
+    outputFile.close()
+
+
+#TF IDF
+num_docs = len(fileList)
+print(num_docs)
+# returns a nested dictionary
+set = {}
+for file in fileList:
+    set[file] = tf_idf(title+file)
+print(set)
