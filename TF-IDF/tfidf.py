@@ -50,7 +50,7 @@ def stemLemming(list):
         outputList.append(word)
     return outputList
 
-# create list with files
+#main code to run
 pf = open("tfidf_docs.txt", "r")
 fileList = []
 for r in pf:
