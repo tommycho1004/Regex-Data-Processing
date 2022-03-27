@@ -70,6 +70,12 @@ def tf (file):
     pf.close()
     return res
 
+def top_five (tfidf):
+    five = sorted(tfidf, key=tfidf.get, reverse=True)[:5]
+    res = []
+    for ele in five:
+        res.append((ele,tfidf[ele]))
+    return res
 #main code to run
 pf = open("tfidf_docs.txt", "r")
 fileList = []
@@ -123,4 +129,10 @@ for file, v in idf.items():
 for file, v in set.items():
     for word in v:
         tfidf[file][word] = round(set[file][word] * idf[file][word], 2)
-print(tfidf)
+#print(tfidf)
+prefix = 'tfidf_'
+for file in fileList:
+    top_5 = top_five(tfidf[file])
+    output = open(prefix+file, 'w')
+    output.write(str(top_5))
+    output.close()

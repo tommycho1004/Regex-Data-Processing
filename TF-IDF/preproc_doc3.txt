@@ -1,1 +1,1 @@
-go watch season
+go watch season premiere
