@@ -15,10 +15,11 @@ def clean(fileName):
     allOfIt = pf.readlines()
     pf.close()
     for line in allOfIt:
-        stringList = (line.lower().split(' ')) #convert everything to lowercase and split by white space
+        stringList = (line.lower().split(' ')) #convert to lowercase
         for string in stringList:
-            if string.replace('_', '').isalnum(): #check for alphanumeric with exception of underscore 
-                wordList.append(string) #append to newlist
+            if not string.startswith('http://') or string.startswith('https://'): #check for website links
+                if string != '': #handle whitespaces created by the split
+                    wordList.append(re.sub(r'[^\w]','',string)) #use regex to remove all nonword characters
     return wordList
 
 def stopWords(list):
