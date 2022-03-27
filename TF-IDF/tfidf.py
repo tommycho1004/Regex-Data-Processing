@@ -85,11 +85,31 @@ for file in fileList: #clean every file on the list
     outputFile.close()
 
 
-#TF IDF
+#TF
 num_docs = len(fileList)
 print(num_docs)
 # returns a nested dictionary
 set = {}
 for file in fileList:
     set[file] = tf_idf(title+file)
-print(set)
+#print(set)
+#IDF calculation
+idf = set.copy()
+all_words = []
+for file, v in set.items():
+    for key in v:
+        if key not in all_words:
+         all_words.append(key)
+#print(all_words)
+for word in all_words:
+    count = 0
+    for file in fileList:
+        if word in set[file]:
+            count += 1
+    for key in idf.keys():
+        if word in idf[key]:
+            idf[key][word] = count
+for file, v in idf.items():
+    for word in v:
+        idf[file][word] = math.log(num_docs / idf[file][word]) + 1
+print(idf)
