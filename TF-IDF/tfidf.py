@@ -50,7 +50,8 @@ def stemLemming(list):
         outputList.append(word)
     return outputList
 
-def tf_idf (file):
+#TF calculations
+def tf (file):
     pf = open(file,'r')
     words = []
     for r in pf.read().split():
@@ -92,8 +93,9 @@ print(num_docs)
 set = {}
 idf = {}
 tfidf = {}
+# idf = set.copy() only gives a shallow copy that references original so its useless
 for file in fileList:
-    set[file] = tf_idf(title+file)
+    set[file] = tf(title+file)
     idf[file] = {}
     tfidf[file] = {}
 
@@ -117,7 +119,6 @@ for file, v in idf.items():
     for word in v:
         idf[file][word] = math.log(num_docs / idf[file][word]) + 1
 #print(idf)
-tf_idf = {}
 for file, v in set.items():
     for word in v:
         tfidf[file][word] = round(set[file][word] * idf[file][word], 2)
