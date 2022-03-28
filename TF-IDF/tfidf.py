@@ -51,11 +51,8 @@ def stemLemming(list):
         outputList.append(word)
     return outputList
 
-# TF-IDF calculations
+#TF calculations
 def tf (file):
-# calculates the Term Frequency (TF) of each word in the preprocessed documents
-# Input: preprocessed file
-# Output: dictionary of term to TF
     pf = open(file,'r')
     words = []
     for r in pf.read().split():
@@ -74,9 +71,6 @@ def tf (file):
     return res
 
 def top_five (tfidf):
-# Outputs the top 5 words with the highest TF-IDF score
-# Input: Dictionary of term to TF-IDF score
-# Output: List of 5 tuples in the format (word, TFIDF score)
     five = sorted(tfidf, key=tfidf.get, reverse=True)[:5]
     res = []
     for ele in five:
@@ -127,13 +121,15 @@ for word in all_words:
     for key in set.keys():
         if word in set[key]:
             idf[key][word] = count
+#print(set)
 for file, v in idf.items():
     for word in v:
         idf[file][word] = math.log(num_docs / idf[file][word]) + 1
+#print(idf)
 for file, v in set.items():
     for word in v:
         tfidf[file][word] = round(set[file][word] * idf[file][word], 2)
-# creating the top 5 tfidf for each file
+#print(tfidf)
 prefix = 'tfidf_'
 for file in fileList:
     top_5 = top_five(tfidf[file])
