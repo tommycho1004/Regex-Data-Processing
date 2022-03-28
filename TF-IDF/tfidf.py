@@ -77,6 +77,8 @@ def top_five (tfidf):
     for ele in five:
         res.append((ele,tfidf[ele]))
     return res
+
+
 #main code to run
 pf = open("tfidf_docs.txt", "r")
 fileList = []
