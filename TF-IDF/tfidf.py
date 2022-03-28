@@ -87,7 +87,6 @@ for r in pf:
 pf.close()
 title = 'preproc_'
 for file in fileList: #clean every file on the list
-    print(file)
     cleanedList = clean(file)
     noStopWordList = stopWords(cleanedList)
     finishedList = stemLemming(noStopWordList)
@@ -95,10 +94,8 @@ for file in fileList: #clean every file on the list
     outputFile.write(' '.join(finishedList))
     outputFile.close()
 
-
 #TF
 num_docs = len(fileList)
-print(num_docs)
 # returns a nested dictionary
 set = {}
 idf = {}
@@ -124,15 +121,12 @@ for word in all_words:
     for key in set.keys():
         if word in set[key]:
             idf[key][word] = count
-#print(set)
 for file, v in idf.items():
     for word in v:
         idf[file][word] = math.log(num_docs / idf[file][word]) + 1
-#print(idf)
 for file, v in set.items():
     for word in v:
         tfidf[file][word] = round(set[file][word] * idf[file][word], 2)
-#print(tfidf)
 prefix = 'tfidf_'
 for file in fileList:
     top_5 = top_five(tfidf[file])
