@@ -17,9 +17,10 @@ def clean(fileName):
     for line in allOfIt:
         stringList = (line.lower().split(' ')) #convert to lowercase
         for string in stringList:
-            if not string.startswith('http://') or string.startswith('https://'): #check for website links
-                if string != '': #handle whitespaces created by the split
-                    wordList.append(re.sub(r'[^\w]','',string)) #use regex to remove all nonword characters
+            if not string.startswith('http://'):
+                if not string.startswith('https://'): #check for website links
+                    if string != '': #handle whitespaces created by the split
+                        wordList.append(re.sub(r'[^\w]','',string)) #use regex to remove all nonword characters
     return wordList
 
 def stopWords(list):
