@@ -51,31 +51,38 @@ def stemLemming(list):
         outputList.append(word)
     return outputList
 
-#TF calculations
+#TF-IDF calculations
 def tf (file):
+# Calculates the Term Frequency (TF) of each word in file
+# Input: preprocessed file
+# Output: Dictonary of word to TF
     pf = open(file,'r')
-    words = []
+    words = [] # create a list with all of the words in file
     for r in pf.read().split():
         words.append(r)
     num_words = len(words)
     words.sort()
-    res = {}
+    res = {} # create a dictionary of unique words and their occurances in words
     for word in words:
         if word not in res:
             res[word] = 1
         else:
             res[word] += 1
-    for ele in res.keys():
+    for ele in res.keys(): # calculate TF in TF(t) = (Number of times term t appears in a document) / (Total number of terms in the document)
         res[ele] = res[ele] / num_words
     pf.close()
     return res
 
 def top_five (tfidf):
+# Gets the top 5 words with the highest TFIDF score
+# Input: Dictionary of word to TFIDF score
+# Output: List of 5 tuples in the format (word, TFIDF score)
     five = sorted(tfidf, key=tfidf.get, reverse=True)[:5]
     res = []
     for ele in five:
         res.append((ele,tfidf[ele]))
     return res
+
 #main code to run
 pf = open("tfidf_docs.txt", "r")
 fileList = []
@@ -93,21 +100,21 @@ for file in fileList: #clean every file on the list
     outputFile.close()
 
 
-#TF
+# Main code to run TF-IDF
 num_docs = len(fileList)
-print(num_docs)
-# returns a nested dictionary
 set = {}
 idf = {}
 tfidf = {}
 # idf = set.copy() only gives a shallow copy that references original so its useless
+# instead I will create the lists with the files as keys
+# calculate the TF nested dictionary first
 for file in fileList:
     set[file] = tf(title+file)
     idf[file] = {}
     tfidf[file] = {}
 
 #IDF calculation
-
+# need a list of all unique words across all of the documents
 all_words = []
 for file, v in set.items():
     for key in v:
@@ -121,15 +128,13 @@ for word in all_words:
     for key in set.keys():
         if word in set[key]:
             idf[key][word] = count
-#print(set)
 for file, v in idf.items():
     for word in v:
         idf[file][word] = math.log(num_docs / idf[file][word]) + 1
-#print(idf)
 for file, v in set.items():
     for word in v:
         tfidf[file][word] = round(set[file][word] * idf[file][word], 2)
-#print(tfidf)
+# calculating top 5 words of each file and outputting to the output files
 prefix = 'tfidf_'
 for file in fileList:
     top_5 = top_five(tfidf[file])
