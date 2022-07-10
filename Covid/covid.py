@@ -93,8 +93,8 @@ with open('covidResult.csv', 'w', newline='') as outFile:
                 row[1] = round(sum(temp)/2)
         # 2.2 Date Formatting
             row[8] = ".".join(dateSwapper(row[8].split('.')))
-            row[9] = ".".join(dateSwapper(row[8].split('.')))
-            row[10] = ".".join(dateSwapper(row[8].split('.')))
+            row[9] = ".".join(dateSwapper(row[9].split('.')))
+            row[10] = ".".join(dateSwapper(row[10].split('.')))
         # 2.3 Longitutde and Latitude Values
             if re.match('NaN', row[6]):
                 row[6] = latitudeAvg(row[4])
